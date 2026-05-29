@@ -19,15 +19,17 @@ function UserContext({ children }) {
                 { withCredentials: true }
             )
 
-            setUserData(result.data)
+            setUserData(result.data.user)
 
-            console.log(result.data)
+            console.log(result.data.user)
 
         } catch (error) {
 
-            console.error("Error fetching current user:", error)
+    console.log(error.response)
 
-        }
+    console.error("Error fetching current user:", error)
+
+}
     }
 
     useEffect(() => {

@@ -43,8 +43,9 @@ function Signin() {
           }, { withCredentials: true })
           
           console.log (result.data)
-          setUserData(result.data)
+          setUserData(result.data.user)
           setLoading(false)
+          navigate("/")
           
         } catch (error) {
 

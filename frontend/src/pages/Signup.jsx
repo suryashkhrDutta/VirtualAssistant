@@ -4,6 +4,7 @@ import { IoEye, IoEyeOff } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import axios from "axios"
 import { userDataContext } from "../context/userContext";
+import {Route, Routes,Navigate} from "react-router-dom";
 function Signup() {
     const [showPassword, setShowPassword] = useState(false)
     const navigate=useNavigate();
@@ -33,6 +34,7 @@ function Signup() {
 
             setUserData(result.data)
             setLoading(false)
+            navigate("/customize")
         } catch (error) {
             console.log(error)
             setUserData(null)
