@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import Card from '../components/Card'
 import image1 from "../assets/image1.png"
 import image2 from "../assets/image2.jpg"
@@ -10,14 +10,18 @@ import img12 from "../assets/img12.png"
 import img13 from "../assets/img13.png"
 import { useRef } from 'react'
 import { useState } from 'react'
+import { MdOutlineKeyboardBackspace } from "react-icons/md";
 
 import { RiImageAddFill } from "react-icons/ri";
+import { userDataContext } from '../context/userContext'
+import {useNavigate } from 'react-router-dom'
 
 
 function Customize() {
-    const[frontendImage, setFrontendImage] = useState(null);
-    const[backendImage, setBackendImage] = useState(null);
-    const inputImage = useRef()
+  const navigate = useNavigate();
+    const {serverUrl,
+        userData, setUserData, backendImage, setBackendImage,frontendImage, setFrontendImage, selectedImage, setSelectedImage} = useContext(userDataContext)
+    const inputImage = useRef() 
     const handleImage = (e) => {
         const file = e.target.files[0]
         setBackendImage(file)
@@ -30,13 +34,55 @@ function Customize() {
         <div className='
 w-full
 min-h-screen
-bg-[linear-gradient(to_top_left,#000000,#02142b,#0b5ed7)]
+bg-[linear-gradient(to_top,#000000,#020617,#1a2747,#0f4c81)]
 
 flex
 justify-center
 items-center
 flex-col
 '>
+  <div
+    onClick={() => navigate("/")}
+    className='
+    absolute
+    top-4 left-4
+    sm:top-6 sm:left-6
+  
+    w-12 h-12
+    sm:w-14 sm:h-14
+  
+    rounded-full
+  
+    bg-white/10
+    backdrop-blur-md
+  
+    border border-white/20
+  
+    flex
+    items-center
+    justify-center
+  
+    cursor-pointer
+  
+    shadow-[0_0_20px_rgba(59,130,246,0.25)]
+  
+    hover:scale-110
+    hover:border-cyan-400
+    hover:shadow-[0_0_30px_rgba(34,211,238,0.6)]
+  
+    transition-all
+    duration-300
+    z-50
+    '
+  >
+    <MdOutlineKeyboardBackspace
+      className='
+      text-white
+      w-6 h-6
+      sm:w-7 sm:h-7
+      '
+    />
+  </div>
 
         <h1
   className='
@@ -99,8 +145,8 @@ lg:gap-10
                 
                 
                 <div
-  className='
-  relative
+  className=
+  {`relative
 
   w-[95px] h-[145px]
   sm:w-[115px] sm:h-[170px]
@@ -132,8 +178,12 @@ lg:gap-10
   hover:shadow-[0_0_30px_rgba(59,130,246,0.45)]
 
   group
-  '
-  onClick={() => inputImage.current.click()}
+  ${selectedImage=="input"? "border-2 border-cyan-500 scale-105 shadow-[0_0_60px_rgba(34,211,238,0.8)] ring-2 ring-cyan-300/50" :null}`}
+  
+  onClick={() => {
+    inputImage.current.click()
+    setSelectedImage("input")
+    }}
 >
 
   {/* glow */}
@@ -254,15 +304,39 @@ lg:gap-10
 </div>
 <input type="file" accept="image/*" ref={inputImage} hidden onChange={handleImage} /> 
             </div>
-        <button className='w-[15%] mt-[30px] h-[55px]
-                    bg-gradient-to-r from-blue-500 to-blue-700
-                    text-white font-semibold text-[18px]
-                    rounded-full
-                    shadow-lg shadow-blue-500/40
-                    transition-all duration-300
-                    hover:scale-105 hover:shadow-blue-500/70
-                    active:scale-95
-                    cursor-pointer'>Next</button>
+        {selectedImage && <button className='
+  w-[140px]
+  sm:w-[170px]
+  md:w-[190px]
+  lg:w-[220px]
+
+  h-[48px]
+  md:h-[55px]
+
+  mt-6
+
+  bg-gradient-to-r
+  from-cyan-500
+  via-blue-500
+  to-indigo-600
+
+  rounded-full
+
+  text-white
+  font-semibold
+
+  shadow-[0_0_25px_rgba(59,130,246,0.5)]
+
+  hover:scale-105
+  hover:shadow-[0_0_40px_rgba(59,130,246,0.8)]
+
+  transition-all
+  duration-300
+  cursor-pointer
+  ' onClick={()=>{
+                      navigate("/customize2")
+                      console.log (" clicked")
+                      }}>Next</button>}
         </div>
     )
 }
