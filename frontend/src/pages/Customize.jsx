@@ -37,6 +37,7 @@ justify-center
 items-center
 flex-col
 '>
+
         <h1
   className='
   text-white
@@ -70,8 +71,8 @@ flex-col
 </h1>
             <div
                 className='
-    w-[95%]
-    max-w-[1200px]
+    w-[100%]
+    max-w-[1250px]
 
     flex
     justify-center
@@ -83,7 +84,7 @@ sm:gap-5
 md:gap-6
 lg:gap-10
 
-    py-10
+    py-0
     '
             >
 
