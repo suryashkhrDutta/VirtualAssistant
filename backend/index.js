@@ -6,6 +6,7 @@ import cookieParser from "cookie-parser"
 import cors from "cors"     
 import authRouter from "./routes/auth.routes.js"
 import userRouter from "./routes/user.routes.js"
+import geminiResponse  from "./gemini.js"
 
 const app = express()
 const port = process.env.PORT || 5000
@@ -22,11 +23,15 @@ app.use(cors(
 
 app.use("/api/users", authRouter);
 app.use("/api/user", userRouter);
-app.get("/", function (req, res){
-    res.send("hii there")
-})
+// app.get("/", function (req, res){
+//     res.send("hii there")
+// })
+
+
+
+
 
 app.listen(port, () => {
     connectDb();
     console.log("Server started")
-});
+}); 
