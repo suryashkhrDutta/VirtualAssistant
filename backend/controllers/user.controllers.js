@@ -57,6 +57,7 @@ export const askToAssistant = async (req, res) => {
         response: `Today is ${moment().format("YYYY-MM-DD")} and the current time is ${moment().format("hh:mm A")}`
     });
 }
+
         const user = await User.findById(req.userId);
         const userName = user.name
 

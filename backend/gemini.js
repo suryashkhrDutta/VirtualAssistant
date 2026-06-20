@@ -151,6 +151,41 @@ IMPORTANT
 7. For search intents, userInput must contain only the searchable phrase.
 8. Output must always be valid JSON.
 
+IMPORTANT CLASSIFICATION RULES
+
+Questions like:
+
+Who is ...
+What is ...
+Why is ...
+How does ...
+Tell me about ...
+
+MUST return:
+
+{
+ "type":"general"
+}
+
+Do NOT use google_search.
+
+Examples:
+
+"Who is Messi?"
+→ general
+
+"What is React?"
+→ general
+
+"Tell me about India"
+→ general
+
+Only use google_search when the user explicitly asks:
+
+"Search ... on Google"
+"Google ..."
+"Find ... on Google"
+
 User Input:
 ${command}
 `;
