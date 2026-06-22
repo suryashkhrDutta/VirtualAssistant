@@ -45,7 +45,9 @@ flex-col
     onClick={() => navigate("/")}
     className='
     absolute
-    top-4 left-4
+    
+    top-2 left-2
+sm:top-6 sm:left-6
     sm:top-6 sm:left-6
   
     w-12 h-12
@@ -78,8 +80,8 @@ flex-col
     <MdOutlineKeyboardBackspace
       className='
       text-white
-      w-6 h-6
-      sm:w-7 sm:h-7
+      sm:w-2 md:h-2
+      h-[200px] sm:h-[350px] md:h-[400px]
       '
     />
   </div>
@@ -87,9 +89,9 @@ flex-col
         <h1
   className='
   text-white
-
+mt-10 sm:mt-0
   text-[28px]
-  sm:text-[34px]
+  sm:text-[24px]
   md:text-[42px]
 
   font-bold

@@ -3,14 +3,25 @@ import { userDataContext } from '../context/userContext'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { MdOutlineKeyboardBackspace } from "react-icons/md";
+import { GiCrossMark } from "react-icons/gi";
+
+import { CgMenuRight } from "react-icons/cg";
+
 import { useState } from 'react';
 import { useRef } from 'react';
+import aiImg from "../assets/ai.gif"
+import userImg from "../assets/user.gif"
 function Home() {
   const { userData, serverUrl, setUserData, getGeminiResponse } = useContext(userDataContext)
   const navigate = useNavigate()
   const [listening, setListening] = useState(false)
+  const [userText,setUserText] = useState("")
+  const [aiText,setAiText] = useState("")
+  const [menuOpen, setMenuOpen] = useState(false)
+  const [showWakeMessage, setShowWakeMessage] = useState(true)
   const isSpeakingRef = useRef(false)
   const recognitionRef = useRef(null)
+  const isRecognizingRef = useRef(false)
   const synth = window.speechSynthesis
 
   const handleLogOut = async () => {
@@ -42,20 +53,25 @@ function Home() {
   }
 
   const speak = (text) => {
-  isSpeakingRef.current = true;
+  setUserText("")
+  setAiText(text)
 
-  const utterance = new SpeechSynthesisUtterance(text);
+  isSpeakingRef.current = true
+
+  const utterance = new SpeechSynthesisUtterance(text)
 
   utterance.onend = () => {
-    isSpeakingRef.current = false;
+    isSpeakingRef.current = false
+
+    setAiText("")
 
     setTimeout(() => {
-      startRecognition();
-    }, 500);
-  };
+      startRecognition()
+    }, 500)
+  }
 
-  synth.speak(utterance);
-};
+  synth.speak(utterance)
+}
 
   const handleCommand = (data) => {
 
@@ -193,6 +209,9 @@ function Home() {
       userData.assistantName.toLowerCase()
     )
   ) {
+    setShowWakeMessage(false)
+    setAiText("")
+    setUserText(transcript)
 
     const command = transcript.toLowerCase()
 
@@ -217,12 +236,7 @@ function Home() {
   return
 }
 
-    // if (command.includes("google")) {
-    //   window.open("https://google.com", "_blank")
-    //   speak("Opening Google")
-    //   return
-    // }
-if (
+    if (
   command === "google" ||
   command === "open google"
 ){
@@ -240,6 +254,8 @@ if (
     }
 
     handleCommand(data)
+    
+    
   }
 }
   const fallback = setInterval(()=>{
@@ -256,37 +272,6 @@ if (
 
 
   }, [])
-
-  //   useEffect(() => {
-
-  //   const SpeechRecognition =
-  //     window.SpeechRecognition || window.webkitSpeechRecognition;
-
-  //   const recognition = new SpeechRecognition();
-
-  //   recognition.continuous = true;
-  //   recognition.interimResults = false;
-  //   recognition.lang = "en-US";
-
-  //   recognition.onresult = (e) => {
-
-  //     let transcript = "";
-
-  //     for (let i = 0; i < e.results.length; i++) {
-  //       transcript += e.results[i][0].transcript + " ";
-  //     }
-
-  //     console.log("heard:", transcript.trim());
-  //   };
-
-  //   recognition.start();
-
-  //   return () => recognition.stop();
-
-  // }, []);
-
-
-
 
   return (
     <div
@@ -309,15 +294,18 @@ if (
         className='
     text-cyan-300
     uppercase
-    tracking-[4px]
+    tracking-[6px]
     text-xs
     sm:text-sm
 
-    mb-3
+    
+    mt-10
+    mb-0
     '
       >
         Your Virtual Assistant
       </p>
+      
 
       <h1
         className='
@@ -329,7 +317,7 @@ if (
 
     font-bold
 
-    mb-8
+    mb-2
 
     text-center
     '
@@ -349,17 +337,54 @@ if (
           {userData?.assistantName}
         </span>
       </h1>
+      <div className="flex items-center gap-2 mb-2">
+  <div
+    className={`
+      w-3 h-3 rounded-full
+      ${
+        listening
+          ? "bg-green-400 animate-pulse shadow-[0_0_15px_rgba(74,222,128,1)]"
+          : "bg-red-400"
+      }
+    `}
+  />
 
+  <span
+    className={`
+      text-sm font-medium
+      ${
+        listening
+          ? "text-green-300"
+          : "text-red-300"
+      }
+    `}
+  >
+    {listening ? "Listening..." : "Standby"}
+  </span>
+</div>
+{showWakeMessage && (
+  <p
+    className="
+    text-cyan-200/70
+    text-sm
+    mb-4
+    tracking-wide
+    animate-pulse
+    "
+  >
+    Say "{userData?.assistantName}" to wake me up
+  </p>
+)}
+    
       <div
         className='
     relative
+    mt-4 sm:mt-8
+    w-[220px]
+h-[220px] sm:h-[380px] md:h-[450px]
 
-    w-[280px]
-    h-[380px]
-
-    sm:w-[320px]
-    sm:h-[450px]
-
+md:w-[320px]
+md:h-[450px]
     rounded-[32px]
     overflow-hidden
 
@@ -368,80 +393,213 @@ if (
     shadow-[0_0_50px_rgba(59,130,246,0.45)]
 
     group
+    mb-4
+    cursor-pointer
     '
       >
 
         <div
-          className='
+  className='
       absolute
-      inset-0
+      -inset-8
+      bg-cyan-500/20
+      blur-[100px]
+      animate-pulse
 
-      bg-blue-500/10
-      blur-3xl
+
 
       group-hover:bg-cyan-500/20
 
       transition-all
       duration-500
+      
       '
-        />
+      />
 
         <img
           src={userData?.assistantImage}
           alt="Assistant"
           className='
-      w-full
-      h-full
-
-      object-cover
-
-      transition-all
-      duration-500
-
-      group-hover:scale-115
+          w-full
+          h-full
+          
+          object-cover
+          
+          transition-all
+          duration-500
+          
+          group-hover:scale-115
+          
       '
         />
 
       </div>
-      <div
-        className='
-  flex
-  flex-col
-  sm:flex-row
+      
+      <div className="mt-6 flex flex-col items-center gap-4">
 
-  gap-4
+  <div className="relative w-[100px] sm:w-[160px] h-[160px]">
 
-  mt-8
-  w-full
-  max-w-[500px]
+    <img
+      src={userImg}
+      alt="User"
+      className={`
+        absolute inset-0 w-full h-full object-contain
+        transition-opacity duration-300
+        ${aiText ? "opacity-0" : "opacity-100"}
+      `}
+    />
 
-  justify-center
-  items-center
-  '
+    <img
+      src={aiImg}
+      alt="AI"
+      className={`
+        absolute inset-0 w-full h-full object-contain
+        transition-opacity duration-300
+        ${aiText ? "opacity-100" : "opacity-0"}
+      `}
+    />
+
+  </div>
+
+  {aiText && (
+    <div
+      className="
+      max-w-[450px]
+      bg-cyan-500/10
+      backdrop-blur-md
+      border border-cyan-400/20
+      rounded-2xl
+      px-5
+      py-3
+      text-cyan-100
+      text-center
+      shadow-lg
+      "
+    >
+      {aiText}
+    </div>
+  )}
+
+</div>
+{/* Mobile Hamburger */}
+{!menuOpen && (
+  <CgMenuRight
+    onClick={() => setMenuOpen(true)}
+    className="
+    lg:hidden
+    text-white
+    absolute
+    top-4
+    right-4
+    w-7
+    h-7
+    cursor-pointer
+    z-50
+    "
+  />
+)}
+{menuOpen && (
+  <div
+    className={`
+fixed inset-0 z-40 flex justify-end
+transition-all duration-300 ease-out
+${menuOpen
+  ? "bg-black/40 backdrop-blur-lg"
+  : "bg-black/0 backdrop-blur-none pointer-events-none"}
+`}
+  >
+    <div
+      className={`
+w-[260px]
+h-full
+bg-white/10
+backdrop-blur-2xl
+border-l
+border-cyan-500/20
+shadow-[-10px_0_40px_rgba(0,0,0,0.4)]
+p-6
+flex
+flex-col
+gap-4
+
+transform
+transition-transform
+duration-500
+ease-[cubic-bezier(0.22,1,0.36,1)]
+
+${menuOpen ? "translate-x-0" : "translate-x-full"}
+`}
+    >
+      <GiCrossMark
+        onClick={() => setMenuOpen(false)}
+        className="
+   text-white
+   w-5
+   h-5
+   self-end
+   cursor-pointer
+   mb-6
+   "
+      />
+
+      <button
+        onClick={() => navigate("/customize")}
+        className="
+h-[50px]
+rounded-xl
+bg-cyan-500/20
+border
+border-cyan-400/30
+text-white
+backdrop-blur-md
+cursor-pointer
+hover:scale-105
+hover:bg-cyan-500/30
+transition-all
+"
       >
+        Customize Assistant
+      </button>
 
+      <button
+        onClick={handleLogOut}
+        className="
+h-[50px]
+rounded-xl
+bg-red-500/10
+border
+border-red-400/30
+text-red-300
+backdrop-blur-md
+cursor-pointer
+hover:scale-105
+hover:bg-red-500/20
+transition-all
+"
+      >
+        Log Out
+      </button>
+    </div>
+  </div>
+)}
+      <div className="absolute right-8 top-1/2 -translate-y-1/2 flex flex-col gap-4">
+      
         <button
           className='
-    w-[220px]
-    h-[55px]
-
-    rounded-full
-
-    bg-gradient-to-r
-    from-cyan-500
-    via-blue-500
-    to-indigo-600
-
-    text-white
-    font-semibold
-
-    shadow-[0_0_25px_rgba(59,130,246,0.5)]
-
-    hover:scale-105
-    hover:shadow-[0_0_40px_rgba(59,130,246,0.8)]
-
-    transition-all
-    duration-300
+    w-[200px]
+h-[50px]
+rounded-xl
+bg-cyan-500/20
+backdrop-blur-md
+border border-cyan-400/30
+text-white
+hidden
+lg:block
+hover:scale-[1.03]
+active:scale-[0.98]
+transition-all
+duration-200
+transition-all
 
     cursor-pointer
     '
@@ -452,28 +610,20 @@ if (
 
         <button
           className='
-    w-[220px]
-    h-[55px]
-
-    rounded-full
-
-    bg-white/10
-    backdrop-blur-md
-
-    border
-    border-red-500/30
-
-    text-red-300
-    font-semibold
-
-    shadow-[0_0_20px_rgba(239,68,68,0.2)]
-
-    hover:scale-105
-    hover:bg-red-500/10
-    hover:border-red-400
-
-    transition-all
-    duration-300
+    w-[200px]
+h-[50px]
+rounded-xl
+bg-red-500/10
+backdrop-blur-md
+border border-red-400/30
+text-red-300
+hidden
+lg:block
+hover:scale-[1.03]
+active:scale-[0.98]
+transition-all
+duration-200
+transition-all
 
     cursor-pointer
     '
