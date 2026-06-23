@@ -212,7 +212,6 @@ function Home() {
     setShowWakeMessage(false)
     setAiText("")
     setUserText(transcript)
-
     const command = transcript.toLowerCase()
 
     // Local commands (NO GEMINI)
@@ -240,6 +239,7 @@ function Home() {
   command === "google" ||
   command === "open google"
 ){
+  console.log("OPEN GOOGLE FIRED")
   window.open("https://google.com","_blank")
   speak("Opening Google")
   return
@@ -495,6 +495,7 @@ md:h-[450px]
     h-7
     cursor-pointer
     z-50
+    
     "
   />
 )}
